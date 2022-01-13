@@ -1,5 +1,6 @@
 ﻿using DAW_Project.Data;
 using DAW_Project.Models.BaseEntity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,74 +20,99 @@ namespace DAW_Project.Repositories.GenericRepository
             _table = _context.Set<TEntity>();
         }
 
+
+        // ################# CREATE #################
         public void Create(TEntity entity)
         {
-            throw new NotImplementedException();
+            _table.Add(entity);
         }
 
-        public Task CreateAsync(TEntity entity)
+        public async Task CreateAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            await _table.AddAsync(entity);
         }
 
         public void CreateRange(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
+            _table.AddRange(entities);
         }
 
-        public Task CreateRangeAsync(IEnumerable<TEntity> entities)
+        public async Task CreateRangeAsync(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
+            await _table.AddRangeAsync(entities);
         }
 
+        // ################# DELETE #################
         public void Delete(TEntity entity)
         {
-            throw new NotImplementedException();
+            _table.Remove(entity);
         }
 
         public void DeleteRange(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
+            _table.RemoveRange(entities);
         }
 
+        // ################# FIND #################
         public TEntity FindById(object id)
         {
-            throw new NotImplementedException();
+            return _table.Find(id);
         }
 
-        public Task<TEntity> FindByIdAsync(object id)
+        public async Task<TEntity> FindByIdAsync(object id)
         {
-            throw new NotImplementedException();
+            return await _table.FindAsync(id);
         }
 
-        public Task<List<TEntity>> GetAll()
+        public async Task<List<TEntity>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _table.AsNoTracking().ToListAsync();
         }
 
         public IQueryable<TEntity> GetAllAsQueryable()
         {
-            throw new NotImplementedException();
+            return _table.AsNoTracking();
         }
 
+        // ################# SAVE #################
         public bool Save()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _context.SaveChanges() > 0;
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            return false;
         }
 
-        public Task<bool> SaveAsync()
+        public async Task<bool> SaveAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            return false;
         }
 
+        // ################# UPDATE #################
         public void Update(TEntity entity)
         {
-            throw new NotImplementedException();
+            _table.Update(entity);
         }
 
         public void UpdateRange(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
+            _table.UpdateRange(entities);
         }
+    }
     }
 }
