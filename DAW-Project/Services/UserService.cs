@@ -1,6 +1,7 @@
 ﻿using DAW_Project.Data;
 using DAW_Project.Models;
 using DAW_Project.Models.DTOs;
+using DAW_Project.Repositories.UserRepository;
 using DAW_Project.Utilities;
 using DAW_Project.Utilities.JWTUtils;
 using System;
@@ -14,12 +15,18 @@ namespace DAW_Project.Services
     public class UserService : IUserService
     {
         public DawProjectContext _dawProjectContext;
-        private IJWTUtils _iJWTUtils;
+        private readonly IJWTUtils _iJWTUtils;
+        public IUserRepository _userRepository;
         private readonly AppSettings _appSettings;
+
+        public UserService(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
 
         public UserResponseDTO Authenticate(UserRequestDTO model)
         {
-            var user = _dawProjectContext.Users.FirstOrDefault(x => x.UserName == model.UserName);
+            var user = _userRepository.FindByUserName(model.UserName);
 
             if (user == null || !BCryptNet.Verify(model.Password, user.PasswordHash))
             {
@@ -33,12 +40,56 @@ namespace DAW_Project.Services
 
         public IEnumerable<User> GetAllUsers()
         {
-            throw new NotImplementedException();
+            var allUsers = _userRepository.GetAllAsQueryable();
+
+            if (allUsers == null)
+            {
+                return null;
+            }
+
+            return allUsers;
         }
 
         public User GetById(Guid id)
         {
-            throw new NotImplementedException();
+            var user = _userRepository.FindById(id);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return user;
+        }
+
+        public User GetByUserName(string userName)
+        {
+            var user = _userRepository.FindByUserName(userName);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return user;
+        }
+
+        public void Create(User user)
+        {
+            _userRepository.Create(user);
+            _userRepository.Save();
+        }
+
+        public void Delete(User user)
+        {
+            _userRepository.Delete(user);
+            _userRepository.Save();
+        }
+
+        public void Update(User user)
+        {
+            _userRepository.Update(user);
+            _userRepository.Save();
         }
     }
 }

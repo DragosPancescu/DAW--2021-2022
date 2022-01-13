@@ -114,5 +114,4 @@ namespace DAW_Project.Repositories.GenericRepository
             _table.UpdateRange(entities);
         }
     }
-    }
 }

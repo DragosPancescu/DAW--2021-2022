@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace DAW_Project.Repositories.UserRepository
 {
-    interface IUserRepository: IGenericRepository<User>
+    public interface IUserRepository: IGenericRepository<User>
     {
+        public User FindByUserName(string userName);
     }
 }

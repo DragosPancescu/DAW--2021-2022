@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DAW_Project.Repositories.VersionRepository
 {
-    interface IVersionRepository: IGenericRepository<ProjectVersion>
+    public interface IVersionRepository: IGenericRepository<ProjectVersion>
     {
     }
 }

@@ -14,5 +14,10 @@ namespace DAW_Project.Repositories.UserRepository
         {
 
         }
+
+        public User FindByUserName(string userName)
+        {
+            return _table.FirstOrDefault(x => x.UserName == userName);
+        }
     }
 }

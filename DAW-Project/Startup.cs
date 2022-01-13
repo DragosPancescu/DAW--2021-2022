@@ -1,4 +1,8 @@
 using DAW_Project.Data;
+using DAW_Project.Repositories.BugRepository;
+using DAW_Project.Repositories.ProjectRepository;
+using DAW_Project.Repositories.UserRepository;
+using DAW_Project.Repositories.VersionRepository;
 using DAW_Project.Services;
 using DAW_Project.Utilities;
 using DAW_Project.Utilities.JWTUtils;
@@ -49,7 +53,10 @@ namespace DAW_Project
 
             // var builder = new DawProjectContext()
             // Created each time they are requested
-            // services.AddTransient<IDatabaseRepository, DatabaseRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IProjectRepository, ProjectRepository>();
+            services.AddTransient<IVersionRepository, VersionRepository>();
+            services.AddTransient<IBugRepository, BugRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

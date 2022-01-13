@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DAW_Project.Repositories.BugRepository
 {
-    interface IBugRepository: IGenericRepository<BugReport>
+    public interface IBugRepository: IGenericRepository<BugReport>
     {
     }
 }

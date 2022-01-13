@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAW_Project.Repositories.GenericRepository
 {
-    interface IGenericRepository<TEntity> where TEntity: BaseEntity
+    public interface IGenericRepository<TEntity> where TEntity: BaseEntity
     {
         // Get all data
         Task<List<TEntity>> GetAll();
