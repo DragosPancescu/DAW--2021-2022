@@ -51,8 +51,9 @@ namespace DAW_Project.Controllers
                 LastName = user.LastName,
                 UserName = user.UserName,
                 Role = Role.User,
-                PasswordHash = BCryptNet.HashPassword(user.Password)
-            };
+                PasswordHash = BCryptNet.HashPassword(user.Password),
+                DateCreated = DateTime.Now
+        };
 
             _userService.Create(userToCreate);
             return Ok(new { Message = "User created with success." });
@@ -85,9 +86,9 @@ namespace DAW_Project.Controllers
         }
 
         [HttpGet("getByUsername")]
-        public IActionResult GetByUserName(string userName)
+        public IActionResult GetByUserName(string username)
         {
-            var user = _userService.GetByUserName(userName);
+            var user = _userService.GetByUserName(username);
 
             if (user == null)
             {
@@ -99,9 +100,9 @@ namespace DAW_Project.Controllers
         }
 
         [HttpDelete("delete")]
-        public IActionResult Delete(UserRequestDTO user)
+        public IActionResult Delete(string username)
         {
-            var userToDelete = _userService.GetByUserName(user.UserName);
+            var userToDelete = _userService.GetByUserName(username);
 
             if (userToDelete == null)
             {
@@ -112,11 +113,43 @@ namespace DAW_Project.Controllers
             return Ok(new { Message = "User deleted with success." });
         }
 
-        // TO DO: Update
-        [HttpPut("update")]
+        
+        [HttpPut("update_no_username")]
         public IActionResult Update(UserRequestDTO user)
         {
-            throw new NotImplementedException();
+            var userToUpdate = _userService.GetByUserName(user.UserName);
+
+            if (userToUpdate == null)
+            {
+                return BadRequest(new { Message = "No user found to update." });
+            }
+
+            // Implement changes
+            userToUpdate.LastName = user.LastName;
+            userToUpdate.FirstName = user.FirstName;
+            userToUpdate.PasswordHash = BCryptNet.HashPassword(user.Password);
+            userToUpdate.DateModified = DateTime.Now;
+
+            _userService.Update(userToUpdate);
+            return Ok(new { Message = "User updated with success." });
+        }
+
+        [HttpPut("update_username")]
+        public IActionResult UpdateUsername(string oldUsername, string newUsername)
+        {
+            var userToUpdate = _userService.GetByUserName(oldUsername);
+
+            if (userToUpdate == null)
+            {
+                return BadRequest(new { Message = "No user found to update." });
+            }
+
+            // Implement changes
+            userToUpdate.UserName = newUsername;
+            userToUpdate.DateModified = DateTime.Now;
+
+            _userService.Update(userToUpdate);
+            return Ok(new { Message = "Username updated with success." });
         }
     }
 }
