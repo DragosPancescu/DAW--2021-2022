@@ -44,8 +44,8 @@ namespace DAW_Project.Controllers
                 return BadRequest(new { Message = "Username field should not be empty." });
             }
 
-            var sameUsernameUsers = _userService.GetByUserName(user.UserName);
-            if (sameUsernameUsers != null)
+            var sameUsernameUser = _userService.GetByUserName(user.UserName);
+            if (sameUsernameUser != null)
             {
                 return BadRequest(new { Message = "Username is already used, pick another one." });
             }
@@ -65,7 +65,7 @@ namespace DAW_Project.Controllers
         }
 
         //[Authorization(Role.Admin)]
-        [HttpGet("getAll")]
+        [HttpGet("get_all")]
         public IActionResult GetAllUsers()
         {
             var users = _userService.GetAllUsers();
@@ -76,7 +76,7 @@ namespace DAW_Project.Controllers
             return Ok(users);
         }
 
-        [HttpGet("getById")]
+        [HttpGet("get_by_id")]
         public IActionResult GetById(Guid id)
         {
             var user = _userService.GetById(id);
@@ -90,7 +90,7 @@ namespace DAW_Project.Controllers
             return Ok(userResponse);
         }
 
-        [HttpGet("getByUsername")]
+        [HttpGet("get_by_username")]
         public IActionResult GetByUserName(string username)
         {
             var user = _userService.GetByUserName(username);

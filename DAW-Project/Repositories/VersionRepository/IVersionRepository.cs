@@ -9,5 +9,7 @@ namespace DAW_Project.Repositories.VersionRepository
 {
     public interface IVersionRepository: IGenericRepository<ProjectVersion>
     {
+        IEnumerable<ProjectVersion> FindByProjectId(Guid projectId);
+        ProjectVersion FindByVersionNumbers(Guid projectId, int majorNumber, int minorNumber, int patchNumber);
     }
 }

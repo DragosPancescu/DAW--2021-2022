@@ -15,5 +15,10 @@ namespace DAW_Project.Repositories.ProjectRepository
         {
 
         }
+
+        public Project FindByName(string name)
+        {
+            return _table.FirstOrDefault(x => x.ProjectName == name);
+        }
     }
 }

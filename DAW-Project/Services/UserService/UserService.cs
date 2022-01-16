@@ -14,7 +14,6 @@ namespace DAW_Project.Services
 {
     public class UserService : IUserService
     {
-        public DawProjectContext _dawProjectContext;
         private readonly IJWTUtils _iJWTUtils;
         public IUserRepository _userRepository;
         private readonly AppSettings _appSettings;

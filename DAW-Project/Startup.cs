@@ -4,6 +4,8 @@ using DAW_Project.Repositories.ProjectRepository;
 using DAW_Project.Repositories.UserRepository;
 using DAW_Project.Repositories.VersionRepository;
 using DAW_Project.Services;
+using DAW_Project.Services.ProjectService;
+using DAW_Project.Services.VersionService;
 using DAW_Project.Utilities;
 using DAW_Project.Utilities.JWTUtils;
 using Microsoft.AspNetCore.Builder;
@@ -45,6 +47,8 @@ namespace DAW_Project
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddScoped<IJWTUtils, JWTUtils>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<IVersionService, VersionService>();
 
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
 

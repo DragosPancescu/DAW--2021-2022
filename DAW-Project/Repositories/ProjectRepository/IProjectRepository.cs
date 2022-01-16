@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace DAW_Project.Repositories.ProjectRepository
 {
-    interface IProjectRepository: IGenericRepository<Project>
+    public interface IProjectRepository: IGenericRepository<Project>
     {
+        public Project FindByName(string name);
     }
 }
