@@ -38,7 +38,12 @@ namespace DAW_Project.Controllers
 
         [HttpPost("create")]
         public IActionResult Create(UserRequestDTO user)
-        {
+        {   
+            if (user.UserName == null)
+            {
+                return BadRequest(new { Message = "Username field should not be empty." });
+            }
+
             var sameUsernameUsers = _userService.GetByUserName(user.UserName);
             if (sameUsernameUsers != null)
             {
@@ -53,7 +58,7 @@ namespace DAW_Project.Controllers
                 Role = Role.User,
                 PasswordHash = BCryptNet.HashPassword(user.Password),
                 DateCreated = DateTime.Now
-        };
+            };
 
             _userService.Create(userToCreate);
             return Ok(new { Message = "User created with success." });
@@ -125,9 +130,9 @@ namespace DAW_Project.Controllers
             }
 
             // Implement changes
-            userToUpdate.LastName = user.LastName;
-            userToUpdate.FirstName = user.FirstName;
-            userToUpdate.PasswordHash = BCryptNet.HashPassword(user.Password);
+            userToUpdate.LastName = user.LastName ?? userToUpdate.LastName;
+            userToUpdate.FirstName = user.FirstName ?? userToUpdate.FirstName;
+            userToUpdate.PasswordHash = user.Password == null ? userToUpdate.PasswordHash : BCryptNet.HashPassword(user.Password);
             userToUpdate.DateModified = DateTime.Now;
 
             _userService.Update(userToUpdate);
