@@ -7,7 +7,7 @@ namespace DAW_Project.Models.DTOs
 {
     public class VersionRequestDTO
     {
-        public Guid ProjectId { get; set; }
+        public string ProjectName { get; set; }
         public DateTime LaunchDate { get; set; }
         public int MajorVersion { get; set; }
         public int MinorVersion { get; set; }

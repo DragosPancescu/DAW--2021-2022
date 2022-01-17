@@ -131,12 +131,13 @@ namespace DAW_Project.Controllers
         [HttpPost("Version/create_version")]
         public IActionResult CreateVersion(VersionRequestDTO version)
         {
-            if (version.ProjectId == Guid.Empty)
+            if (version.ProjectName == null)
             {
-                return BadRequest(new { Message = "Project ID field should not be empty." });
+                return BadRequest(new { Message = "ProjectName field should not be empty." });
             }
 
-            var sameNumberedVersion = _versionService.GetByVersionNumbers(version.ProjectId, 
+            var projectId = _projectService.GetByName(version.ProjectName).Id;
+            var sameNumberedVersion = _versionService.GetByVersionNumbers(projectId, 
                                                                           majorNumber: version.MajorVersion,   
                                                                           minorNumber: version.MinorVersion,
                                                                           patchNumber: version.PatchVersion);
@@ -148,7 +149,7 @@ namespace DAW_Project.Controllers
 
             var versionToCreate = new ProjectVersion
             {
-                ProjectId = version.ProjectId,
+                ProjectId = projectId,
                 LaunchDate = version.LaunchDate,
                 MajorVersion = version.MajorVersion,
                 MinorVersion = version.MinorVersion,
@@ -161,8 +162,14 @@ namespace DAW_Project.Controllers
         }
 
         [HttpGet("Version/get_all_versions")]
-        public IActionResult GetAllVersions(Guid projectId)
-        {
+        public IActionResult GetAllVersions(string projectName)
+        {   
+            if (projectName == null)
+            {
+                return BadRequest(new { Message = "ProjectName field should not be empty." });
+            }
+
+            var projectId = _projectService.GetByName(projectName).Id;
             var versions = _versionService.GetAllVersionsOfProject(projectId);
 
             if (versions == null)
@@ -174,8 +181,14 @@ namespace DAW_Project.Controllers
         }
 
         [HttpGet("Version/get_version")]
-        public IActionResult GetAllVersions(Guid projectId, int majorNumber = 0, int minorNumber = 0, int patchNumber = 0)
+        public IActionResult GetAllVersions(string projectName, int majorNumber = 0, int minorNumber = 0, int patchNumber = 0)
         {
+            if (projectName == null)
+            {
+                return BadRequest(new { Message = "ProjectName field should not be empty." });
+            }
+
+            var projectId = _projectService.GetByName(projectName).Id;
             var version = _versionService.GetByVersionNumbers(projectId,
                                                               majorNumber: majorNumber,
                                                               minorNumber: minorNumber,
@@ -192,8 +205,15 @@ namespace DAW_Project.Controllers
         [HttpDelete("Version/delete_version")]
         public IActionResult DeleteVersion(VersionRequestDTO version)
         {
+            if (version.ProjectName == null)
+            {
+                return BadRequest(new { Message = "ProjectName field should not be empty." });
+            }
+
+            var projectId = _projectService.GetByName(version.ProjectName).Id;
+            
             // Searching for the version
-            var versionToDelete = _versionService.GetByVersionNumbers(version.ProjectId,
+            var versionToDelete = _versionService.GetByVersionNumbers(projectId,
                                                                       majorNumber: version.MajorVersion,
                                                                       minorNumber: version.MinorVersion,
                                                                       patchNumber: version.PatchVersion);
@@ -207,7 +227,92 @@ namespace DAW_Project.Controllers
             return Ok(new { Message = "Version deleted with success." });
         }
 
-        // TO DO: Add update for version
-        //[HttpPut("update_project_name")]
+        [HttpPut("update_version_major")]
+        public IActionResult UpdateVersionMajor(VersionRequestDTO version, int newMajorNumber)
+        {
+            if (version.ProjectName == null)
+            {
+                return BadRequest(new { Message = "ProjectName field should not be empty." });
+            }
+
+            var projectId = _projectService.GetByName(version.ProjectName).Id;
+
+            // Searching for the version
+            var versionToUpdate = _versionService.GetByVersionNumbers(projectId,
+                                                                      majorNumber: version.MajorVersion,
+                                                                      minorNumber: version.MinorVersion,
+                                                                      patchNumber: version.PatchVersion);
+
+            if (versionToUpdate == null)
+            {
+                return BadRequest(new { Message = "No version found to update." });
+            }
+
+            versionToUpdate.MajorVersion = newMajorNumber;
+            _versionService.Update(versionToUpdate);
+
+            return Ok(new { Message = "Major version updated with success." });
+        }
+
+        [HttpPut("update_version_minor")]
+        public IActionResult UpdateVersionMinor(VersionRequestDTO version, int newMinorNumber)
+        {
+            if (version.ProjectName == null)
+            {
+                return BadRequest(new { Message = "ProjectName field should not be empty." });
+            }
+
+            var projectId = _projectService.GetByName(version.ProjectName).Id;
+
+            // Searching for the version
+            var versionToUpdate = _versionService.GetByVersionNumbers(projectId,
+                                                                      majorNumber: version.MajorVersion,
+                                                                      minorNumber: version.MinorVersion,
+                                                                      patchNumber: version.PatchVersion);
+
+            if (versionToUpdate == null)
+            {
+                return BadRequest(new { Message = "No version found to update." });
+            }
+
+            versionToUpdate.MinorVersion = newMinorNumber;
+            _versionService.Update(versionToUpdate);
+
+            return Ok(new { Message = "Minor version updated with success." });
+        }
+
+        [HttpPut("update_version_patch")]
+        public IActionResult UpdateVersionPatch(VersionRequestDTO version, int newPatchNumber)
+        {
+            if (version.ProjectName == null)
+            {
+                return BadRequest(new { Message = "ProjectName field should not be empty." });
+            }
+
+            var project = _projectService.GetByName(version.ProjectName);
+
+            if (project == null)
+            {
+                return BadRequest(new { Message = "Could not find any project with the given name" });
+            }
+
+            // Searching for the version
+            var versionToUpdate = _versionService.GetByVersionNumbers(project.Id,
+                                                                      majorNumber: version.MajorVersion,
+                                                                      minorNumber: version.MinorVersion,
+                                                                      patchNumber: version.PatchVersion);
+
+            if (versionToUpdate == null)
+            {
+                return BadRequest(new { Message = "No version found to update." });
+            }
+
+            versionToUpdate.PatchVersion = newPatchNumber;
+            _versionService.Update(versionToUpdate);
+
+            return Ok(new { Message = "Patch version updated with success." });
+        }
+
+        // #################### Bug ####################
     }
 }
