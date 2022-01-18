@@ -15,5 +15,6 @@ namespace DAW_Project.Repositories.BugRepository
         {
 
         }
+
     }
 }

@@ -4,6 +4,7 @@ using DAW_Project.Repositories.ProjectRepository;
 using DAW_Project.Repositories.UserRepository;
 using DAW_Project.Repositories.VersionRepository;
 using DAW_Project.Services;
+using DAW_Project.Services.BugService;
 using DAW_Project.Services.ProjectService;
 using DAW_Project.Services.VersionService;
 using DAW_Project.Utilities;
@@ -27,6 +28,8 @@ namespace DAW_Project
 {
     public class Startup
     {
+        private readonly string CorsAllowSpecificOrigin = "frontendAllowOrigin";
+     
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -49,6 +52,7 @@ namespace DAW_Project
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IVersionService, VersionService>();
+            services.AddScoped<IBugService, BugService>();
 
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
 
@@ -61,6 +65,18 @@ namespace DAW_Project
             services.AddTransient<IProjectRepository, ProjectRepository>();
             services.AddTransient<IVersionRepository, VersionRepository>();
             services.AddTransient<IBugRepository, BugRepository>();
+
+            services.AddCors(option =>
+            {
+                option.AddPolicy(name: CorsAllowSpecificOrigin,
+                                builder =>
+                                {
+                                    builder.WithOrigins("https://localhost:4200", "https://localhost:4201")
+                                    .AllowAnyHeader()
+                                    .AllowAnyMethod()
+                                    .AllowCredentials();
+                                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,6 +99,9 @@ namespace DAW_Project
             {
                 endpoints.MapControllers();
             });
+
+            // setting for allowing another origin to make request  to our server
+            app.UseCors(CorsAllowSpecificOrigin);
         }
     }
 }
