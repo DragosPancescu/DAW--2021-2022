@@ -2,6 +2,7 @@
 using DAW_Project.Models.DTOs;
 using DAW_Project.Services;
 using DAW_Project.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -64,7 +65,7 @@ namespace DAW_Project.Controllers
             return Ok(new { Message = "User created with success." });
         }
 
-        //[Authorization(Role.Admin)]
+        [AllowAnonymous]
         [HttpGet("get_all")]
         public IActionResult GetAllUsers()
         {
@@ -76,6 +77,7 @@ namespace DAW_Project.Controllers
             return Ok(users);
         }
 
+        [Authorization(Role.Admin)]
         [HttpGet("get_by_id")]
         public IActionResult GetById(Guid id)
         {
@@ -90,6 +92,7 @@ namespace DAW_Project.Controllers
             return Ok(userResponse);
         }
 
+        [Authorization(Role.User)]
         [HttpGet("get_by_username")]
         public IActionResult GetByUserName(string username)
         {
@@ -100,10 +103,11 @@ namespace DAW_Project.Controllers
                 return BadRequest(new { Message = "No user found with the Username you provided." });
             }
 
-            UserResponseDTO userResponse = new UserResponseDTO(user, "don't know");
+            UserResponseDTO userResponse = new UserResponseDTO(user, "");
             return Ok(userResponse);
         }
 
+        [AllowAnonymous]
         [HttpDelete("delete")]
         public IActionResult Delete(string username)
         {
@@ -118,7 +122,7 @@ namespace DAW_Project.Controllers
             return Ok(new { Message = "User deleted with success." });
         }
 
-        
+        [AllowAnonymous]
         [HttpPut("update_no_username")]
         public IActionResult Update(UserRequestDTO user)
         {
@@ -139,6 +143,7 @@ namespace DAW_Project.Controllers
             return Ok(new { Message = "User updated with success." });
         }
 
+        [AllowAnonymous]
         [HttpPut("update_username")]
         public IActionResult UpdateUsername(string oldUsername, string newUsername)
         {

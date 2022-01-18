@@ -1,4 +1,5 @@
 ﻿using DAW_Project.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -14,11 +15,16 @@ namespace DAW_Project.Utilities
         private readonly ICollection<Role> _roles;
         public AuthorizationAttribute(params Role[] roles)
         {
-            _roles = roles;
+            _roles = roles ?? Array.Empty<Role>();
         }
         
         public void OnAuthorization(AuthorizationFilterContext context)
         {
+            // skip authorization if action is decorated with [AllowAnonymous] attribute
+            var allowAnonymous = context.ActionDescriptor.EndpointMetadata.OfType<AllowAnonymousAttribute>().Any();
+            if (allowAnonymous)
+                return;
+
             var unauthorizationStatusCodeObject = new JsonResult(new { Message = "Unauthorized" })
             { StatusCode = StatusCodes.Status401Unauthorized};
 

@@ -89,6 +89,12 @@ namespace DAW_Project
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DAW_Project v1"));
             }
 
+            // global cors policy
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -99,6 +105,8 @@ namespace DAW_Project
             {
                 endpoints.MapControllers();
             });
+
+            app.UseMiddleware<JWTMiddleWare>();
 
             // setting for allowing another origin to make request  to our server
             app.UseCors(CorsAllowSpecificOrigin);

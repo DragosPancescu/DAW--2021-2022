@@ -16,11 +16,11 @@ namespace DAW_Project.Services
     {
         private readonly IJWTUtils _iJWTUtils;
         public IUserRepository _userRepository;
-        private readonly AppSettings _appSettings;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IJWTUtils iJWTUtils)
         {
             _userRepository = userRepository;
+            _iJWTUtils = iJWTUtils;
         }
 
         public UserResponseDTO Authenticate(UserRequestDTO model)
