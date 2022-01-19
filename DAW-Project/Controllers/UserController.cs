@@ -92,7 +92,7 @@ namespace DAW_Project.Controllers
             return Ok(userResponse);
         }
 
-        [Authorization(Role.User)]
+        [Authorization(Role.Admin)]
         [HttpGet("get_by_username")]
         public IActionResult GetByUserName(string username)
         {

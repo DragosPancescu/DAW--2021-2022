@@ -15,7 +15,7 @@ namespace DAW_Project.Utilities
         private readonly ICollection<Role> _roles;
         public AuthorizationAttribute(params Role[] roles)
         {
-            _roles = roles ?? Array.Empty<Role>();
+            _roles = roles;
         }
         
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -25,18 +25,32 @@ namespace DAW_Project.Utilities
             if (allowAnonymous)
                 return;
 
-            var unauthorizationStatusCodeObject = new JsonResult(new { Message = "Unauthorized" })
-            { StatusCode = StatusCodes.Status401Unauthorized};
+            JsonResult unauthorizationStatusCodeObject;
 
             if (_roles == null)
             {
+                unauthorizationStatusCodeObject = new JsonResult(new { Message = "Unauthorized - 1" })
+                { StatusCode = StatusCodes.Status401Unauthorized };
+
                 context.Result = unauthorizationStatusCodeObject;
             }
 
-            var user = (User)context.HttpContext.Items["User"];
+            var user = (User)context.HttpContext.Items["Users"];
             // If the user has the required role.
-            if (user == null || !_roles.Contains(user.Role))
+            if (user == null)
             {
+                unauthorizationStatusCodeObject = new JsonResult(new { Message = "Unauthorized - 2" })
+                { StatusCode = StatusCodes.Status401Unauthorized };
+
+                context.Result = unauthorizationStatusCodeObject;
+                return;
+            }
+
+            if (!_roles.Contains(user.Role))
+            {
+                unauthorizationStatusCodeObject = new JsonResult(new { Message = "Unauthorized - 3" })
+                { StatusCode = StatusCodes.Status401Unauthorized };
+
                 context.Result = unauthorizationStatusCodeObject;
             }
         }

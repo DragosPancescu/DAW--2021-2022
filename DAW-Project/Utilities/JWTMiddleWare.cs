@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace DAW_Project.Utilities
 {
-    public class JWTMiddleWare
+    public class JWTMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly AppSettings _appSettings;
 
-        public JWTMiddleWare(RequestDelegate next, IOptions<AppSettings> appSettings)
+        public JWTMiddleware(RequestDelegate next, IOptions<AppSettings> appSettings)
         {
             _next = next;
             _appSettings = appSettings.Value;
@@ -24,6 +24,7 @@ namespace DAW_Project.Utilities
         {
             // Bearer -token-
             var token = httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
             var userID = jWUtils.ValidateJWTToken(token);
 
             if (userID != Guid.Empty)
