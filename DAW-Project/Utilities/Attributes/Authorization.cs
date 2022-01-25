@@ -36,6 +36,11 @@ namespace DAW_Project.Utilities
             }
 
             var user = (User)context.HttpContext.Items["Users"];
+            if (user.Role == Role.Admin)
+            {
+                return;
+            }
+
             // If the user has the required role.
             if (user == null)
             {

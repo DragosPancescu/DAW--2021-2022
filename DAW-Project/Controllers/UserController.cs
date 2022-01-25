@@ -107,7 +107,7 @@ namespace DAW_Project.Controllers
             return Ok(userResponse);
         }
 
-        [AllowAnonymous]
+        [Authorization(Role.User)]
         [HttpDelete("delete")]
         public IActionResult Delete(string username)
         {
