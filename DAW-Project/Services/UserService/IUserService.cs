@@ -21,6 +21,9 @@ namespace DAW_Project.Services
         // GetByUsername
         User GetByUserName(string userName);
 
+        // GetAllBugReports
+        IEnumerable<BugReport> GetAllBugReports(string userName);
+
         // Create
         void Create(User user);
 

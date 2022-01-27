@@ -94,9 +94,9 @@ namespace DAW_Project.Controllers
 
         [Authorization(Role.Admin)]
         [HttpGet("get_by_username")]
-        public IActionResult GetByUserName(string username)
+        public IActionResult GetByUserName(string userName)
         {
-            var user = _userService.GetByUserName(username);
+            var user = _userService.GetByUserName(userName);
 
             if (user == null)
             {
@@ -105,6 +105,26 @@ namespace DAW_Project.Controllers
 
             UserResponseDTO userResponse = new UserResponseDTO(user, "");
             return Ok(userResponse);
+        }
+
+        [HttpGet("get_all_bug_reports")]
+        public IActionResult GetAllBugReports(string userName)
+        {
+            var user = _userService.GetByUserName(userName);
+
+            if (user == null)
+            {
+                return BadRequest(new { Message = "No user found with the Username you provided." });
+            }
+
+            var bugReports = _userService.GetAllBugReports(userName);
+
+            if(bugReports == null)
+            {
+                return BadRequest(new { Message = "No bug reports found for the user you provided" });
+            }
+
+            return Ok(bugReports);
         }
 
         [Authorization(Role.User)]

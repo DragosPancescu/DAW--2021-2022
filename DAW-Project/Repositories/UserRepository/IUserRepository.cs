@@ -10,5 +10,7 @@ namespace DAW_Project.Repositories.UserRepository
     public interface IUserRepository: IGenericRepository<User>
     {
         public User FindByUserName(string userName);
+
+        public IEnumerable<BugReport> FindAllBugReports(string userName);
     }
 }

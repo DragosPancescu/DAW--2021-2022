@@ -73,6 +73,18 @@ namespace DAW_Project.Services
             return user;
         }
 
+        public IEnumerable<BugReport> GetAllBugReports(string userName)
+        {
+            var bugReports = _userRepository.FindAllBugReports(userName);
+
+            if (bugReports == null)
+            {
+                return null;
+            }
+
+            return bugReports;
+        }
+
         public void Create(User user)
         {
             _userRepository.Create(user);
